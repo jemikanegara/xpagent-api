@@ -11,6 +11,10 @@ const User = new Schema({
     userPassword: {
         type: String,
         required: true
+    },
+    lastLogin: {
+        type: Date,
+        required: true
     }
 }, { timestamps: true })
 
