@@ -19,20 +19,28 @@ const getUser = async token => {
   return tokenCheck;
 };
 
+// Auth
+const authCheck = (auth, receivedToken) => {
+  // try to retrieve a user with the token
+  if (auth) {
+    return getUser(receivedToken);
+  } else {
+    return null;
+  }
+};
+
 const server = new ApolloServer({
   typeDefs,
   resolvers,
   context: ({ req }) => {
     // get the user token from the headers
     const auth = req.headers.authorization;
-
-    // try to retrieve a user with the token
-    if (auth) {
-      const receivedToken = auth.split(" ")[1];
-      const decoded = getUser(receivedToken);
-      // add the user to the context
-      return { decoded, receivedToken };
-    }
+    const receivedToken = auth.split(" ")[1];
+    // check auth
+    const decoded = authCheck(auth, receivedToken);
+    // get image file
+    const image = req.body.image;
+    return { decoded, receivedToken, image };
   }
 });
 

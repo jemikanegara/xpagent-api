@@ -1,11 +1,17 @@
 const { gql } = require("apollo-server-express");
+
+// User
 const userOutput = require("./output/userOutput");
 const userInput = require("./input/userInput");
+// Agent
+const agentOutput = require("./output/agentOutput");
 
 // Construct a schema,
 const type = gql`
   type Query {
-    user(id: ID): userOutput
+    #Get Agent
+    searchAgent(agentName: String): agentOutput
+    agent(id: ID): agentOutput!
   }
 
   type Mutation {
@@ -18,5 +24,6 @@ const type = gql`
 
   ${userOutput}
   ${userInput}
+  ${agentOutput}
 `;
 module.exports = type;

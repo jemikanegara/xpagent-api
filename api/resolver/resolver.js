@@ -2,7 +2,8 @@
 const Date = require("../type/scalar/Date");
 
 // Query
-const { user } = require("../resolver/query/userQuery");
+// const { user } = require("../resolver/query/userQuery");
+const { agent, searchAgent } = require("../resolver/query/agentQuery");
 
 // Mutation
 const {
@@ -21,7 +22,8 @@ const {
 const resolver = {
   Date,
   Query: {
-    user
+    agent,
+    searchAgent
   },
   Mutation: {
     userRegister,

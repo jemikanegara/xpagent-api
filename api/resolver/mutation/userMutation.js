@@ -100,7 +100,6 @@ exports.userUpdate = async (root, { user }, { decoded, receivedToken }) => {
       console.log(err);
       throw Error("User not found");
     });
-  console.log(checkUser);
   if (!checkUser) {
     throw Error("Incorrect password");
   }
