@@ -1,6 +1,7 @@
 const { ApolloServer } = require("apollo-server-express");
 const typeDefs = require("./type/type");
 const resolvers = require("./resolver/resolver");
+// const {graphqlUploadExpress} = require("graphql-upload")
 
 // JWT
 const jwt = require("jsonwebtoken");
@@ -32,15 +33,14 @@ const authCheck = (auth, receivedToken) => {
 const server = new ApolloServer({
   typeDefs,
   resolvers,
-  context: ({ req }) => {
+  context: async ({ req }) => {
+    // const body = JSON.parse(req.body);
     // get the user token from the headers
     const auth = req.headers.authorization;
-    const receivedToken = auth.split(" ")[1];
+    const receivedToken = auth ? auth.split(" ")[1] : null;
     // check auth
-    const decoded = authCheck(auth, receivedToken);
-    // get image file
-    const image = req.body.image;
-    return { decoded, receivedToken, image };
+    const decoded = await authCheck(auth, receivedToken);
+    return { decoded, receivedToken };
   }
 });
 

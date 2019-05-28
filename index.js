@@ -1,8 +1,10 @@
 require("dotenv").config();
 const express = require("express");
+const mongoose = require("mongoose");
+
 const cors = require("cors");
 const bodyParser = require("body-parser");
-const mongoose = require("mongoose");
+const bodyParserGQL = require("body-parser-graphql");
 
 // GraphQL
 const server = require("./api/schema");
@@ -37,13 +39,16 @@ mongoose
 app.use(cors());
 
 // Parse application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.urlencoded({ extended: true }));
 
 // Parse application/json
 app.use(bodyParser.json());
 
+// Parse application/graphql
+app.use(bodyParserGQL.graphql());
+
 // Get single image file
-app.use(singleImage);
+// app.use(singleImage);
 
 // Apply Apollo
 server.applyMiddleware({ app });

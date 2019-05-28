@@ -6,4 +6,4 @@ exports.searchAgent = (root, { agentName }) =>
     })
     .limit(10)
     .exec();
-exports.agent = (root, { id }) => Agent.findById(id);
+exports.getAgent = (root, { id }) => Agent.findById(id);

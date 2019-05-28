@@ -9,5 +9,5 @@ const userOutput = `
     type tokenOutput {
         token: String!
     }
-`
-module.exports = userOutput
+`;
+module.exports = userOutput;

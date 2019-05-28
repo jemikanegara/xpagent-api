@@ -3,14 +3,15 @@ const Date = require("../type/scalar/Date");
 
 // Query
 // const { user } = require("../resolver/query/userQuery");
-const { agent, searchAgent } = require("../resolver/query/agentQuery");
+const { getAgent, searchAgent } = require("../resolver/query/agentQuery");
 
 // Mutation
 const {
   userRegister,
   userLogin,
   userUpdate
-} = require("../resolver/mutation/userMutation");
+} = require("./mutation/userMutation");
+const { createAgent } = require("./mutation/agentMutation");
 
 // const Driver = require("../../models/driver")
 // const Phone = require("../../models/phone")
@@ -22,13 +23,14 @@ const {
 const resolver = {
   Date,
   Query: {
-    agent,
+    getAgent,
     searchAgent
   },
   Mutation: {
     userRegister,
     userLogin,
-    userUpdate
+    userUpdate,
+    createAgent
   }
 };
 

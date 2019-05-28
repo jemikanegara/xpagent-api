@@ -13,19 +13,17 @@ const S3 = new AWS.S3();
 
 async function uploadImage(image) {
   try {
-    const buffer = fs.readFileSync(image);
-    const type = fileType(buffer);
     const params = {
       ACL: "public-read",
-      Body: buffer,
+      Body: image.createReadStream(),
       Bucket: process.env.AWS_S3_BUCKET_NAME,
-      ContentType: type.mime,
-      Key: `${Date.now().toString()}.${type.ext}`
+      ContentType: image.mimetype,
+      Key: `${Date.now().toString()}.${image.filename}`
     };
 
     // Upload Image
     const data = await S3.upload(params).promise();
-
+    console.log("data upload");
     return data;
   } catch (err) {
     return err;
