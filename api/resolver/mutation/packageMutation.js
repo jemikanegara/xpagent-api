@@ -83,18 +83,30 @@ exports.updatePackage = async (root, { tourPackage }, { decoded }) => {
 // MUTATION : Delete Package
 exports.deletePackage = async (root, { tourPackage }, { decoded }) => {
 
+  // CHECK : Agent
   const findAgent = await Agent.findOne({ agentUser: decoded._id }).exec();
 
-  if (!decoded || !tourPackage._id || !findAgent) {
-    throw Error("No access");
-  }
+  // ERROR : Token & ID & Agent
+  if (!decoded || !tourPackage._id || !findAgent) throw Error("No access");
 
+  // Deconstructure
   const { _id } = tourPackage
 
+  // Check if package agent match with client's agent id
+  const isAuthorized = await Package.findById(_id).then(tourPackage => tourPackage.packageAgent.toString() === findAgent._id.toString())
+
+  // Throw error if id not match with package agent
+  if (!isAuthorized) throw Error('No access')
+
+  // Get Old Package image
   const packageImage = await Package.findById(_id).then(package => package.packageImage)
 
+  // Delete Old Package Image
   const deletedImage = await deleteImage(packageImage)
 
+  // If Delete image file success then delete the package in database
   if (deletedImage) return await Package.findByIdAndDelete(tourPackage._id);
+
+  // Throw error if delete failed
   else throw Error('database delete failed')
 };

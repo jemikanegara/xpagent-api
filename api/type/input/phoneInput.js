@@ -1,8 +1,15 @@
 const phoneInput = `
-    input phoneInput {
+    input addPhoneInput {
+        phoneNumber: String!
+    }
+
+    input updatePhoneInput {
         _id: ID!
-        phoneNumber: Int!
-        phoneUser: String
+        phoneNumber: String!
+    }
+
+    input deletePhoneInput {
+        _id: ID!
     }
 `;
 

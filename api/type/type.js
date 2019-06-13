@@ -43,9 +43,9 @@ const type = gql`
     updatePackage(tourPackage: updatePackageInput!): packageOutput!
     deletePackage(tourPackage: deletePackageInput!): packageOutput!
     # Phone
-    addPhone(phone: Int!): phoneOutput!
-    updatePhone(phone: phoneInput!): phoneOutput!
-    deletePhone(phone: phoneInput!): phoneOutput!
+    addPhone(phone: addPhoneInput!): phoneOutput!
+    updatePhone(phone: updatePhoneInput!): phoneOutput!
+    deletePhone(phone: deletePhoneInput!): phoneOutput!
   }
 
   # Scalar Declaration
