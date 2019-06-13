@@ -4,7 +4,7 @@ const Schema = mongoose.Schema
 const Review = new Schema({
     reviewOrder: {
         type: Schema.Types.ObjectId,
-        ref: "Schedule"
+        ref: "Order"
     },
     reviewRating: {
         type: String,

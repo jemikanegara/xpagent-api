@@ -1,6 +1,4 @@
 const AWS = require("aws-sdk");
-const fs = require("fs");
-const fileType = require("file-type");
 
 AWS.config.update({
   accessKeyId: process.env.AWS_SECRET_KEY_ID,

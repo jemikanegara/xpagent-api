@@ -6,9 +6,9 @@ const Conversation = new Schema({
         type: Schema.Types.ObjectId,
         ref: "User"
     },
-    conversationDriver: {
+    conversationAgent: {
         type: Schema.Types.ObjectId,
-        ref: "Driver"
+        ref: "Agent"
     }
 }, { timestamps: true })
 

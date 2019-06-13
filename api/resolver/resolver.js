@@ -11,14 +11,13 @@ const {
   userLogin,
   userUpdate
 } = require("./mutation/userMutation");
-const { createAgent } = require("./mutation/agentMutation");
-
-// const Driver = require("../../models/driver")
-// const Phone = require("../../models/phone")
-// const Package = require("../../models/package")
-// const Order = require("../../models/order")
-// const Invoice = require("../../models/invoice")
-// const Schedule = require("../../models/booking")
+const { createAgent, updateAgent } = require("./mutation/agentMutation");
+const {
+  createPackage,
+  updatePackage,
+  deletePackage
+} = require("./mutation/packageMutation");
+const { addPhone, updatePhone, deletePhone } = require('./mutation/phoneMutation')
 
 const resolver = {
   Date,
@@ -27,10 +26,24 @@ const resolver = {
     searchAgent
   },
   Mutation: {
+    // User
     userRegister,
     userLogin,
     userUpdate,
-    createAgent
+
+    // Agent
+    createAgent,
+    updateAgent,
+
+    // Package
+    createPackage,
+    updatePackage,
+    deletePackage,
+
+    // Phone
+    addPhone,
+    updatePhone,
+    deletePhone
   }
 };
 

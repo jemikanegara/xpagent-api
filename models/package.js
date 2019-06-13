@@ -10,7 +10,7 @@ const Package = new Schema({
     type: Number,
     required: true
   },
-  packageDriver: {
+  packageAgent: {
     type: Schema.Types.ObjectId,
     ref: "Agent",
     required: true

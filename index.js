@@ -9,23 +9,24 @@ const bodyParserGQL = require("body-parser-graphql");
 // GraphQL
 const server = require("./api/schema");
 
-// Single Image
-const singleImage = require("./api/helpers/imageUpload");
-
 // Variables
 const app = express();
 const port = process.env.PORT || 5000;
 const DBName = process.env.DB_NAME;
 const DBUsername = process.env.DB_USERNAME;
 const DBPassword = process.env.DB_PASSWORD;
+const remoteDB = `mongodb+srv://${DBUsername}:${DBPassword}@xpagent-kdnc0.mongodb.net/${DBName}`;
+const localDB = `mongodb://localhost/xpagent`;
+const development = process.env.DEVELOPMENT;
 
 // Connect Database
 mongoose
   .connect(
-    `mongodb+srv://${DBUsername}:${DBPassword}@xpagent-kdnc0.mongodb.net/${DBName}`,
+    development ? localDB : remoteDB,
     {
       useNewUrlParser: true,
-      useCreateIndex: true
+      useCreateIndex: true,
+      useFindAndModify: false
     }
   )
   .then(() => {

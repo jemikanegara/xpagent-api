@@ -8,6 +8,7 @@ const saltRounds = 10;
 // JWT
 const jwt = require("jsonwebtoken");
 const secret = process.env.JWT_SECRET;
+const expiresIn = '7d'
 
 // Check if database returned a value
 const findUser = user => {
@@ -16,28 +17,38 @@ const findUser = user => {
   }
 };
 
-// Register
+// MUTATION : Register
 exports.userRegister = async (root, { user }) => {
   const { userEmail, userPassword } = user;
+
+  // Checking Email
   if (!userEmail) {
     throw Error("email invalid");
   }
+
+  // Checking Password
   if (!userPassword) {
     throw Error("password invalid");
   }
+
+  // Hashing Password
   const hashPassword = await bcrypt.hash(userPassword, saltRounds);
+
+  // Create New User Object
   const newUser = await new User({
     userEmail,
     userPassword: hashPassword,
     lastLogin: new Date()
   });
+
+  // Create New User on Database
   return await newUser
     .save()
     .then(async createdUser => {
       const token = await jwt.sign(
         { _id: createdUser._id, userEmail: createdUser.userEmail },
         secret,
-        { expiresIn: 60 * 15 }
+        { expiresIn }
       );
       return { token };
     })
@@ -46,44 +57,71 @@ exports.userRegister = async (root, { user }) => {
     });
 };
 
-// Login
+// MUTATION : Login
 exports.userLogin = async (root, { user }, { decoded, receivedToken }) => {
+
+  // Check if token already verified
   if (decoded) {
     return { token: receivedToken };
   }
+
+  // Deconstructure Email and Password
   const { userEmail, userPassword } = user;
+
+  // Check email
   if (!userEmail) {
     throw Error("email invalid");
   }
+
+  // Check password
   if (!userPassword) {
     throw Error("password invalid");
   }
+
+  // Check if user exist in database
   const checkUser = await User.findOne({ userEmail });
+
+  // Throw error if user not found
   if (!checkUser) {
     throw Error("user not found");
   }
+
+  // Compare hashed password in token vs database
   const checkPassword = await bcrypt.compare(
     userPassword,
     checkUser.userPassword
   );
+
+  // Throw error if password invalid
   if (!checkPassword) {
     throw Error("password invalid");
   }
+
+  // Create new token if email and password correct
   const token = await jwt.sign(
     { _id: checkUser._id, userEmail: checkUser.userEmail },
     secret,
-    { expiresIn: 60 * 15 }
+    { expiresIn }
   );
+
+  // Return token to client
   return { token };
 };
 
-// Update
+// MUTATION : Update
 exports.userUpdate = async (root, { user }, { decoded, receivedToken }) => {
+
+  // Throw error if token not verified
   if (!decoded) {
     throw Error("No access");
   }
+
+  // Extract ID from token
   const { _id } = await decoded;
+
+  // Extract email, password, and new password from request body
   const { userNewEmail, userPassword, userNewPassword } = user;
+
   // Don't let user change with old password
   if (userNewPassword === userPassword) {
     throw Error("This password already used");
@@ -129,11 +167,12 @@ exports.userUpdate = async (root, { user }, { decoded, receivedToken }) => {
       findUser(user);
       const { _id, userEmail } = user;
       const newToken = await jwt.sign({ _id, userEmail }, secret, {
-        expiresIn: 60 * 15
+        expiresIn
       });
       return { token: newToken };
     });
   }
 
+  // Throw error if new email or new password field empty
   throw Error("Cannot update empty field");
 };
