@@ -1,5 +1,6 @@
 const mongoose = require("mongoose")
 const Schema = mongoose.Schema
+const Package = require('./packageSchema')
 
 const Order = new Schema({
     orderPackage: {
@@ -7,21 +8,30 @@ const Order = new Schema({
         ref: "Package",
         required: true
     },
-    orderDate: {
-        type: Date,
-        required: true
-    },
     orderUser: {
         type: Schema.Types.ObjectId,
         ref: "User",
         required: true
     },
+    orderAmount: {
+        type: Number,
+        required: true
+    },
+    orderSchedule: {
+        type: Date,
+        required: true,
+        default: Date.now()
+    },
     orderPassengers: {
         type: [String],
-        required: true
+        required: true,
+        default: undefined
     },
     orderNote: {
         type: String
+    },
+    orderCheckoutPackage: {
+        type: Package
     },
     orderDelivered: {
         type: Boolean,

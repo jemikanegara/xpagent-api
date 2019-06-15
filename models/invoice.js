@@ -1,6 +1,5 @@
 const mongoose = require("mongoose")
 const Schema = mongoose.Schema
-const Order = require("../models/order")
 
 const Invoice = new Schema({
     invoiceOrders: [{
@@ -23,7 +22,8 @@ const Invoice = new Schema({
     },
     invoiceContact: [{
         type: Schema.Types.ObjectId,
-        ref: "Phone"
+        ref: "Phone",
+        required: true
     }]
 }, { timestamps: true })
 

@@ -18,12 +18,17 @@ const {
   deletePackage
 } = require("./mutation/packageMutation");
 const { addPhone, updatePhone, deletePhone } = require('./mutation/phoneMutation')
+const { getOwnPackage } = require('./query/packageQuery')
+const { createOrder,
+  deleteOrder,
+  checkoutOrder } = require('./mutation/orderMutation')
 
 const resolver = {
   Date,
   Query: {
     getAgent,
-    searchAgent
+    searchAgent,
+    getOwnPackage
   },
   Mutation: {
     // User
@@ -43,7 +48,12 @@ const resolver = {
     // Phone
     addPhone,
     updatePhone,
-    deletePhone
+    deletePhone,
+
+    // Order
+    createOrder,
+    deleteOrder,
+    checkoutOrder
   }
 };
 

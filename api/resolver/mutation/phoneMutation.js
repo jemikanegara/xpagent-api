@@ -28,7 +28,7 @@ exports.updatePhone = async (root, { phone }, { decoded }) => {
     const findUser = await User.findById(decoded._id)
 
     // CHECK : User vs Phone User
-    const isAuthorized = await Phone.findById(phone._id).then(phone => phone.phoneUser.toString() === findUser._id.toString())
+    const isAuthorized = await Phone.findById(phone._id).where('phoneUser').equals(findUser._id)
 
     // ERROR : Token & User & Auth
     if (!decoded || !findUser || !isAuthorized) throw Error('No access')
@@ -43,8 +43,8 @@ exports.deletePhone = async (root, { phone }, { decoded }) => {
     // CHECK : User
     const findUser = await User.findById(decoded._id)
 
-    // CHECK : Phone vs Phone User
-    const isAuthorized = await Phone.findById(phone._id).then(phone => phone.phoneUser.toString() === findUser._id.toString())
+    // CHECK : User vs Phone User
+    const isAuthorized = await Phone.findById(phone._id).where('phoneUser').equals(findUser._id)
 
     // ERROR : Token & User & Auth
     if (!decoded || !findUser || !isAuthorized) throw Error('No access')

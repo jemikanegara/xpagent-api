@@ -9,7 +9,8 @@ const Conversation = new Schema({
     conversationAgent: {
         type: Schema.Types.ObjectId,
         ref: "Agent"
-    }
+    },
+    conversationMessages: [{ type: Schema.Types.ObjectId, ref: "Message" }]
 }, { timestamps: true })
 
 module.exports = mongoose.model("Conversation", Conversation)

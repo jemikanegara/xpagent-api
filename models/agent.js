@@ -19,7 +19,8 @@ const Agent = new Schema(
     },
     agentUser: {
       type: Schema.Types.ObjectId,
-      ref: "User"
+      ref: "User",
+      required: true
     }
   },
   { timestamps: true }

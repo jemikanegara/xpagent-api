@@ -19,6 +19,14 @@ const packageInput = require("./input/packageInput");
 const phoneOutput = require("./output/phoneOutput");
 const phoneInput = require("./input/phoneInput");
 
+// Order
+const orderOutput = require("./output/orderOutput")
+const orderInput = require("./input/orderInput")
+
+// Invoice
+const invoiceOutput = require("./output/invoiceOutput")
+const invoiceInput = require("./input/invoiceInput")
+
 // Construct a schema
 const type = gql`
   type Query {
@@ -26,8 +34,15 @@ const type = gql`
     searchAgent(agentName: String!): agentOutput!
     getAgent(id: ID): agentOutput!
     # Package
-    searchPackage(packageName: String!): packageOutput!
+    getOwnPackage: [packageOutput!]!
+    searchPackage(packageName: String!): [packageOutput!]!
     newPackage: [packageOutput!]!
+    # Order
+    getOrders: [orderOutput]!
+    getOrder(id: String!): orderOutput!
+    # Invoice 
+    getInvoices: [invoiceOutput]!
+    getInvoice(invoice: invoiceInput!): invoiceOutput!
   }
 
   type Mutation {
@@ -46,6 +61,10 @@ const type = gql`
     addPhone(phone: addPhoneInput!): phoneOutput!
     updatePhone(phone: updatePhoneInput!): phoneOutput!
     deletePhone(phone: deletePhoneInput!): phoneOutput!
+    # Order
+    createOrder(order: createOrderInput) : orderOutput!
+    deleteOrder(order: deleteOrderInput) : orderOutput!
+    checkoutOrder(orders: [deleteOrderInput]) : invoiceOutput!
   }
 
   # Scalar Declaration
@@ -58,6 +77,10 @@ const type = gql`
   ${userOutput}
   ${userInput}
 
+  # Phone Types
+  ${phoneOutput}
+  ${phoneInput}
+
   # Agent Types
   ${agentOutput}
   ${agentInput}
@@ -66,8 +89,12 @@ const type = gql`
   ${packageOutput}
   ${packageInput}
 
-  # Phone Types
-  ${phoneOutput}
-  ${phoneInput}
+  # Order Types
+  ${orderOutput}
+  ${orderInput}
+
+  # Invoice Types
+  ${invoiceOutput}
+  ${invoiceInput}
 `;
 module.exports = type;
