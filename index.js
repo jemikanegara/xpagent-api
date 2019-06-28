@@ -39,20 +39,22 @@ mongoose
 // Apply Cors Unblocker
 app.use(cors());
 
+// Parse application/graphql
+app.use(bodyParserGQL.graphql());
+
+// Apply Apollo
+server.applyMiddleware({ app });
+
 // Parse application/x-www-form-urlencoded
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ extended: false }));
 
 // Parse application/json
 app.use(bodyParser.json());
 
-// Parse application/graphql
-app.use(bodyParserGQL.graphql());
-
 // Get single image file
 // app.use(singleImage);
 
-// Apply Apollo
-server.applyMiddleware({ app });
+
 
 // Run server
 app.listen(port, () => {

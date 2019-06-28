@@ -2,7 +2,7 @@ const userInput = `
     input userAuth {
         userEmail : String!
         userPassword : String!
-        token: String
+        isAgent: Boolean
     }
 
     input userUpdate {

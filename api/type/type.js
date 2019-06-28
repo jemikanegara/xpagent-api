@@ -27,6 +27,10 @@ const orderInput = require("./input/orderInput")
 const invoiceOutput = require("./output/invoiceOutput")
 const invoiceInput = require("./input/invoiceInput")
 
+// Review
+const reviewOutput = require('./output/reviewOutput')
+const reviewInput = require('./input/reviewInput')
+
 // Construct a schema
 const type = gql`
   type Query {
@@ -35,6 +39,7 @@ const type = gql`
     getAgent(id: ID): agentOutput!
     # Package
     getOwnPackage: [packageOutput!]!
+    getSinglePackage(id: String!): packageOutput!
     searchPackage(packageName: String!): [packageOutput!]!
     newPackage: [packageOutput!]!
     # Order
@@ -50,9 +55,13 @@ const type = gql`
     userRegister(user: userAuth!): tokenOutput!
     userLogin(user: userAuth!): tokenOutput!
     userUpdate(user: userUpdate!): tokenOutput!
+    userEmailCheck(email: String!): Boolean!
+    tokenCheck(token: String!): Boolean!
     # Agent
     createAgent(agent: agentInput): agentOutput!
     updateAgent(agent: agentInput): agentOutput!
+    agentEmailCheck(email: String!): Boolean!
+    agentTokenCheck(token: String!): agentTokenOutput!
     # Package
     createPackage(tourPackage: createPackageInput!): packageOutput!
     updatePackage(tourPackage: updatePackageInput!): packageOutput!
@@ -65,6 +74,8 @@ const type = gql`
     createOrder(order: createOrderInput) : orderOutput!
     deleteOrder(order: deleteOrderInput) : orderOutput!
     checkoutOrder(orders: [deleteOrderInput]) : invoiceOutput!
+    # Review
+    createReview(review: reviewInput!) : reviewOutput!
   }
 
   # Scalar Declaration
@@ -96,5 +107,9 @@ const type = gql`
   # Invoice Types
   ${invoiceOutput}
   ${invoiceInput}
+
+  # Review Types
+  ${reviewOutput},
+  ${reviewInput}
 `;
 module.exports = type;

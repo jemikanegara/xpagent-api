@@ -11,7 +11,6 @@ const secret = process.env.JWT_SECRET;
 const getUser = async token => {
   const tokenCheck = await jwt.verify(token, secret, (err, decoded) => {
     if (err) {
-      console.log(err);
       return null;
     } else {
       return decoded;
@@ -34,7 +33,6 @@ const server = new ApolloServer({
   typeDefs,
   resolvers,
   context: async ({ req }) => {
-    // const body = JSON.parse(req.body);
     // get the user token from the headers
     const auth = req.headers.authorization;
     const receivedToken = auth ? auth.split(" ")[1] : null;

@@ -8,6 +8,7 @@ const userOutput = `
 
     type tokenOutput {
         token: String!
+        isAgent: Boolean
     }
 `;
 module.exports = userOutput;

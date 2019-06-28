@@ -9,7 +9,7 @@ AWS.config.setPromisesDependency(Promise);
 
 const S3 = new AWS.S3();
 
-async function uploadImage(image) {
+const uploadImage = async (image) => {
   try {
     const params = {
       ACL: "public-read",
@@ -21,14 +21,23 @@ async function uploadImage(image) {
 
     // Upload Image
     const data = await S3.upload(params).promise();
-    console.log("data upload");
     return data;
   } catch (err) {
     return err;
   }
 }
 
-async function getImage(image) {
+const uploadMultiImages = async (images) => {
+  const packageUploadedPromise = await images.map(async singleImg => {
+    const packageUploadedImage = await uploadImage(singleImg)
+    if (!packageUploadedImage.Key) throw Error("Upload Failed");
+    return packageUploadedImage.Key
+  })
+  const packageUploadedImage = await Promise.all(packageUploadedPromise)
+  return packageUploadedImage
+}
+
+const getImage = async (image) => {
   try {
     const params = {
       Bucket: process.env.AWS_S3_BUCKET_NAME,
@@ -43,7 +52,7 @@ async function getImage(image) {
   }
 }
 
-async function deleteImage(image) {
+const deleteImage = async (image) => {
   try {
     const params = {
       Bucket: process.env.AWS_S3_BUCKET_NAME,
@@ -59,8 +68,22 @@ async function deleteImage(image) {
   }
 }
 
+const deleteMultiImages = async (images) => {
+  const imagesParams = images.map(image => ({ Key: image.Key }))
+  const params = {
+    Bucket: process.env.AWS_S3_BUCKET_NAME,
+    Delete: {
+      Objects: imagesParams,
+      Quiet: false
+    }
+  };
+  return await s3.deleteObjects(params).promise();
+}
+
 module.exports = {
   uploadImage,
+  uploadMultiImages,
   getImage,
-  deleteImage
+  deleteImage,
+  deleteMultiImages
 };

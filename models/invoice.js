@@ -24,7 +24,12 @@ const Invoice = new Schema({
         type: Schema.Types.ObjectId,
         ref: "Phone",
         required: true
-    }]
+    }],
+    invoiceUser: {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+        required: true
+    }
 }, { timestamps: true })
 
 module.exports = mongoose.model("Invoice", Invoice)

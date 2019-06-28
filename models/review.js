@@ -4,10 +4,22 @@ const Schema = mongoose.Schema
 const Review = new Schema({
     reviewOrder: {
         type: Schema.Types.ObjectId,
-        ref: "Order"
+        ref: "Order",
+        required: true,
+        unique: true
+    },
+    reviewPackage: {
+        type: Schema.Types.ObjectId,
+        ref: "Package",
+        required: true
+    },
+    reviewInvoice: {
+        type: Schema.Types.ObjectId,
+        ref: "Invoice",
+        required: true
     },
     reviewRating: {
-        type: String,
+        type: Number,
         required: true
     },
     reviewComment: {

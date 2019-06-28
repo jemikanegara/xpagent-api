@@ -49,16 +49,12 @@ exports.checkoutOrder = async (root, { orders }, { decoded }) => {
             return await Order.findByIdAndUpdate(order._id, { orderCheckoutPackage }, { new: true })
         })
     const orderCheckoutPackage = await Promise.all(insertOrderCheckoutPackage)
-    console.log(orderCheckoutPackage)
     if (orderCheckoutPackage.length !== orders.length) throw Error("checkout failed")
 
     // GENERATE : Invoice Amount
     const orderAmount = orderCheckoutPackage.slice().map(order => order.orderAmount)
-    console.log("ORDER AMOUNT")
-    console.log(orderAmount)
     const invoiceAmount = orderAmount.reduce((accumulator, currentVal) => accumulator + currentVal)
-    console.log("INVOICE AMOUNT")
-    console.log(invoiceAmount)
+
     // GENERATE : Invoice Payment Method
     const invoicePaymentMethod = "CASH"
     // GENERATE : Invoice Contact
@@ -68,9 +64,10 @@ exports.checkoutOrder = async (root, { orders }, { decoded }) => {
         invoiceOrders: orderIds,
         invoiceAmount,
         invoicePaymentMethod,
-        invoiceContact
+        invoiceContact,
+        invoiceUser: user._id
     })
     // DATABASE : Create INVOICE
     const invoice = await newInvoice.save()
-    return await Invoice.findById(invoice._id).populate("invoiceOrders").populate("orderPackage")
+    return await Invoice.findById(invoice._id).select('-invoiceUser').populate("invoiceOrders").populate("orderCheckoutPackage")
 }

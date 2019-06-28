@@ -1,6 +1,28 @@
 // Model
 const Agent = require("../../../models/agent");
+const User = require("../../../models/user")
 const { uploadImage, deleteImage } = require("../../helpers/S3");
+
+exports.agentEmailCheck = async (root, { email }) => {
+  const user = await User.findOne({ userEmail: email }).exec()
+  if (!user) return false
+  if (user) return true
+  else return false
+}
+
+exports.agentTokenCheck = async (root, args, { decoded }) => {
+  let tokenCheck = {
+    valid: false,
+    isAgent: false
+  }
+  if (!decoded) return tokenCheck
+  const user = await User.findById(decoded._id)
+  if (!user) return tokenCheck
+  const agent = await Agent.findOne({ agentUser: user._id })
+  if (agent) return { valid: true, isAgent: true }
+  if (user && !agent) return { valid: true, isAgent: false }
+  else return tokenCheck
+}
 
 exports.createAgent = async (root, { agent }, { decoded }) => {
   if (!decoded) {
@@ -25,7 +47,6 @@ exports.createAgent = async (root, { agent }, { decoded }) => {
     agentUser: decoded._id
   });
 
-  console.log("pass schema");
   return await newAgent.save();
 };
 

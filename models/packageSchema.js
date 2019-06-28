@@ -19,8 +19,8 @@ const Package = new Schema({
         type: String,
         required: true
     },
-    packageImage: {
-        type: String,
+    packageImages: {
+        type: [String],
         required: true
     },
     packageDuration: {
@@ -31,6 +31,6 @@ const Package = new Schema({
         type: Number,
         required: true
     }
-});
+}, { timestamps: true });
 
 module.exports = Package

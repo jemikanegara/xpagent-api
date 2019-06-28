@@ -3,7 +3,7 @@ const packageInput = `
         packageName : String!
         packagePrice: Int!
         packageDescription: String!
-        packageImage: Upload!
+        packageImages: [Upload!]!
         packageDuration: Int!
         packageCustomer: Int!
     }
@@ -13,7 +13,7 @@ const packageInput = `
         packageName : String
         packagePrice: Int
         packageDescription: String
-        packageImage: Upload
+        packageImages: [Upload]
         packageDuration: Int
         packageCustomer: Int
     }

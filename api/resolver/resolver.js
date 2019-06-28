@@ -4,41 +4,52 @@ const Date = require("../type/scalar/Date");
 // Query
 // const { user } = require("../resolver/query/userQuery");
 const { getAgent, searchAgent } = require("../resolver/query/agentQuery");
+const { getOwnPackage, getSinglePackage } = require('./query/packageQuery')
+const { getInvoice, getInvoices } = require("../resolver/query/invoiceQuery")
 
 // Mutation
 const {
   userRegister,
   userLogin,
-  userUpdate
+  userUpdate,
+  userEmailCheck,
+  tokenCheck
 } = require("./mutation/userMutation");
-const { createAgent, updateAgent } = require("./mutation/agentMutation");
+const { createAgent, updateAgent, agentEmailCheck, agentTokenCheck } = require("./mutation/agentMutation");
 const {
   createPackage,
   updatePackage,
   deletePackage
 } = require("./mutation/packageMutation");
 const { addPhone, updatePhone, deletePhone } = require('./mutation/phoneMutation')
-const { getOwnPackage } = require('./query/packageQuery')
 const { createOrder,
   deleteOrder,
   checkoutOrder } = require('./mutation/orderMutation')
+const { createReview } = require('./mutation/reviewMutation')
 
 const resolver = {
   Date,
   Query: {
     getAgent,
     searchAgent,
-    getOwnPackage
+    getOwnPackage,
+    getSinglePackage,
+    getInvoice,
+    getInvoices
   },
   Mutation: {
     // User
     userRegister,
     userLogin,
     userUpdate,
+    userEmailCheck,
+    tokenCheck,
 
     // Agent
     createAgent,
     updateAgent,
+    agentEmailCheck,
+    agentTokenCheck,
 
     // Package
     createPackage,
@@ -53,7 +64,10 @@ const resolver = {
     // Order
     createOrder,
     deleteOrder,
-    checkoutOrder
+    checkoutOrder,
+
+    // Review
+    createReview
   }
 };
 

@@ -3,9 +3,9 @@ const packageOutput = `
         _id : ID!
         packageName : String!
         packagePrice: Int!
-        packageAgent: String!
+        packageAgent: agentOutput!
         packageDescription: String!
-        packageImage: String!
+        packageImages: [String!]!
         packageDuration: Int!
         packageCustomer: Int!
     }

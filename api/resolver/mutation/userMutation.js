@@ -1,5 +1,6 @@
 // Model
 const User = require("../../../models/user");
+const Agent = require("../../../models/agent")
 
 //  Bcrypt
 const bcrypt = require("bcrypt");
@@ -16,6 +17,21 @@ const findUser = user => {
     throw Error("User not found");
   }
 };
+
+exports.userEmailCheck = async (root, { email }) => {
+  const user = await User.findOne({ userEmail: email }).exec()
+  if (!user) return false
+  if (user.userEmail === email) return true
+  else return false
+}
+
+exports.tokenCheck = async (root, args, { decoded }) => {
+  if (!decoded) return false
+  const user = await User.findById(decoded._id)
+  if (!user) return false
+  if (user._id.toString() === decoded._id.toString()) return true
+  else return false
+}
 
 // MUTATION : Register
 exports.userRegister = async (root, { user }) => {
@@ -59,15 +75,8 @@ exports.userRegister = async (root, { user }) => {
 
 // MUTATION : Login
 exports.userLogin = async (root, { user }, { decoded, receivedToken }) => {
-
-  // Check if token already verified
-  if (decoded) {
-    return { token: receivedToken };
-  }
-
   // Deconstructure Email and Password
-  const { userEmail, userPassword } = user;
-
+  const { userEmail, userPassword, isAgent } = user;
   // Check email
   if (!userEmail) {
     throw Error("email invalid");
@@ -97,6 +106,17 @@ exports.userLogin = async (root, { user }, { decoded, receivedToken }) => {
     throw Error("password invalid");
   }
 
+  let agentValidation = false
+
+  if (isAgent) {
+    const checkAgent = await Agent.findOne({ agentUser: checkUser._id })
+    if (!checkAgent) {
+      throw Error("not an agent")
+    }
+    agentValidation = true
+  }
+
+
   // Create new token if email and password correct
   const token = await jwt.sign(
     { _id: checkUser._id, userEmail: checkUser.userEmail },
@@ -105,7 +125,7 @@ exports.userLogin = async (root, { user }, { decoded, receivedToken }) => {
   );
 
   // Return token to client
-  return { token };
+  return { token, isAgent: agentValidation };
 };
 
 // MUTATION : Update
@@ -131,11 +151,9 @@ exports.userUpdate = async (root, { user }, { decoded, receivedToken }) => {
   const checkUser = await User.findById(_id)
     .then(async user => {
       const isMatch = await bcrypt.compare(userPassword, user.userPassword);
-      console.log(isMatch);
       return isMatch;
     })
     .catch(err => {
-      console.log(err);
       throw Error("User not found");
     });
   if (!checkUser) {
@@ -145,7 +163,6 @@ exports.userUpdate = async (root, { user }, { decoded, receivedToken }) => {
   // Check New Password Field
   if (userNewPassword) {
     const newPassword = await bcrypt.hash(userNewPassword, saltRounds);
-    console.log(newPassword);
     const getToken = await User.findByIdAndUpdate(
       _id,
       { userPassword: newPassword },
