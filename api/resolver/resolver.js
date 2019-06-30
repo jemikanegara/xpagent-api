@@ -19,7 +19,8 @@ const { createAgent, updateAgent, agentEmailCheck, agentTokenCheck } = require("
 const {
   createPackage,
   updatePackage,
-  deletePackage
+  deletePackage,
+  deletePackageImage
 } = require("./mutation/packageMutation");
 const { addPhone, updatePhone, deletePhone } = require('./mutation/phoneMutation')
 const { createOrder,
@@ -55,6 +56,7 @@ const resolver = {
     createPackage,
     updatePackage,
     deletePackage,
+    deletePackageImage,
 
     // Phone
     addPhone,

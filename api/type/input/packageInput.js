@@ -19,8 +19,9 @@ const packageInput = `
     }
 
     input deletePackageInput {
-        _id : ID
+        _id : ID!
     }
+
 `;
 
 module.exports = packageInput;

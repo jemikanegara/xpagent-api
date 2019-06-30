@@ -66,6 +66,7 @@ const type = gql`
     createPackage(tourPackage: createPackageInput!): packageOutput!
     updatePackage(tourPackage: updatePackageInput!): packageOutput!
     deletePackage(tourPackage: deletePackageInput!): packageOutput!
+    deletePackageImage(_id: ID!, imageKey: String!) : packageOutput!
     # Phone
     addPhone(phone: addPhoneInput!): phoneOutput!
     updatePhone(phone: updatePhoneInput!): phoneOutput!

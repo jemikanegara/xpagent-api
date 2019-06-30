@@ -34,6 +34,7 @@ const uploadMultiImages = async (images) => {
     return packageUploadedImage.Key
   })
   const packageUploadedImage = await Promise.all(packageUploadedPromise)
+  console.log("jalan")
   return packageUploadedImage
 }
 
@@ -53,6 +54,7 @@ const getImage = async (image) => {
 }
 
 const deleteImage = async (image) => {
+  console.log(image)
   try {
     const params = {
       Bucket: process.env.AWS_S3_BUCKET_NAME,
@@ -60,7 +62,7 @@ const deleteImage = async (image) => {
     };
 
     // Delete Image
-    const data = await S3.deleteObject(params).promise();
+    const data = await S3.deleteObject(params).promise()
 
     return data;
   } catch (err) {

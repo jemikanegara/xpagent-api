@@ -2,6 +2,25 @@ const Agent = require("../../../models/agent");
 const Package = require("../../../models/package");
 const { uploadImage, uploadMultiImages, deleteMultiImages, deleteImage } = require("../../helpers/S3");
 
+exports.deletePackageImage = async (root, { imageKey, _id }, { decoded }) => {
+  if (!decoded) throw Error("No access");
+
+  const findAgent = await Agent.findOne({ agentUser: decoded._id }).exec();
+  if (!findAgent) throw Error("No Access");
+
+  const findPackage = await Package.findById(_id)
+
+  if (!findPackage.packageAgent.toString() === findAgent._id.toString()) throw Error("No access")
+
+  if (findPackage.packageImages.length < 2) throw Error("Package must have at least one image")
+
+  const deletedImage = await deleteImage(imageKey)
+
+  if (!deletedImage) throw Error("Delete Image Failed")
+
+  return await Package.findByIdAndUpdate(_id, { $pull: { packageImages: imageKey } }, { new: true })
+}
+
 // MUTATION : Create Package
 exports.createPackage = async (root, { tourPackage }, { decoded }) => {
 
@@ -39,7 +58,6 @@ exports.createPackage = async (root, { tourPackage }, { decoded }) => {
 
 // MUTATION : Update Package
 exports.updatePackage = async (root, { tourPackage }, { decoded }) => {
-  console.log("run")
   // CHECK: Agent
   const findAgent = await Agent.findOne({ agentUser: decoded._id }).exec();
 
@@ -48,10 +66,8 @@ exports.updatePackage = async (root, { tourPackage }, { decoded }) => {
     throw Error("No access");
   }
 
-  console.log(tourPackage.packageName)
-
   // Deconstructure package value
-  const { _id, packageImages, packageImage = null } = tourPackage
+  const { _id, packageImages } = tourPackage
 
   if (!_id || !packageImages) {
     throw Error("Data Error");
@@ -66,22 +82,33 @@ exports.updatePackage = async (root, { tourPackage }, { decoded }) => {
   // New package properties
   const newPackageElements = {}
 
-  for (let packageElement in tourPackage) {
+  const images = await Promise.all(packageImages).then(img => img)
+  let newPackageImages = []
 
+  for (let packageElement in tourPackage) {
+    console.log(packageElement)
     // If packageImage then upload to S3 and return the key
-    if (packageElement === 'packageImage') {
-      newPackageElements[packageElement] = await uploadMultiImages(await packageImages).Key
-      if (newPackageElements[packageElement]) {
-        const packageImages = await Package.findById(_id).then(package => package.packageImages)
-        deleteImage(packageImages)
-      }
+    if (packageElement === 'packageImages') {
+      console.log("masuk packageImage")
+      const packageImages = await uploadMultiImages(images)
+      console.log("lolos")
+      newPackageImages = await packageImages
     }
 
     // If not packageImage then assign to element value
-    if (packageElement !== 'packageImage' || packageElement !== '_id') newPackageElements[packageElement] = tourPackage[packageElement]
+    if (packageElement !== 'packageImages' && packageElement !== '_id') newPackageElements[packageElement] = tourPackage[packageElement]
   }
 
-  return await Package.findByIdAndUpdate(_id, { ...newPackageElements }, { new: true });
+  newPackageImages = await Promise.all(newPackageImages)
+
+  let updatedPackage = Object.keys(newPackageElements).length == 0 && await Package.findByIdAndUpdate(_id, newPackageElements, { new: true });
+
+  if (packageImages.length > 0) {
+    const updatedPackageImage = await Package.findByIdAndUpdate(_id, { $push: { packageImages: { $each: newPackageImages } } }, { new: true })
+    updatedPackage = updatedPackageImage
+  }
+
+  return updatedPackage
 };
 
 // MUTATION : Delete Package

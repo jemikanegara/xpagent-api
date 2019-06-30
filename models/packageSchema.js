@@ -17,7 +17,8 @@ const Package = new Schema({
     },
     packageDescription: {
         type: String,
-        required: true
+        required: true,
+        minlength: 30
     },
     packageImages: {
         type: [String],
