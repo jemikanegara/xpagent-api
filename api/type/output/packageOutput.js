@@ -9,6 +9,12 @@ const packageOutput = `
         packageDuration: Int!
         packageCustomer: Int!
     }
+
+    type deleteMultiPackageOutput {
+        n: Int!
+        ok: Int!
+        deletedCount: Int!
+    }
 `;
 
 module.exports = packageOutput;

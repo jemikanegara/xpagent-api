@@ -71,7 +71,7 @@ const deleteImage = async (image) => {
 }
 
 const deleteMultiImages = async (images) => {
-  const imagesParams = images.map(image => ({ Key: image.Key }))
+  const imagesParams = images.map(image => ({ Key: image }))
   const params = {
     Bucket: process.env.AWS_S3_BUCKET_NAME,
     Delete: {
@@ -79,7 +79,7 @@ const deleteMultiImages = async (images) => {
       Quiet: false
     }
   };
-  return await s3.deleteObjects(params).promise();
+  return await S3.deleteObjects(params).promise();
 }
 
 module.exports = {

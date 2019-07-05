@@ -20,7 +20,8 @@ const {
   createPackage,
   updatePackage,
   deletePackage,
-  deletePackageImage
+  deletePackageImage,
+  deleteMultiPackages
 } = require("./mutation/packageMutation");
 const { addPhone, updatePhone, deletePhone } = require('./mutation/phoneMutation')
 const { createOrder,
@@ -57,6 +58,7 @@ const resolver = {
     updatePackage,
     deletePackage,
     deletePackageImage,
+    deleteMultiPackages,
 
     // Phone
     addPhone,

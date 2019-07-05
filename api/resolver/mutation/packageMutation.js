@@ -146,7 +146,36 @@ exports.deletePackage = async (root, args, context) => {
 };
 
 
-exports.deleteMultiPackages = async (root, { tourPackage }, context) => {
-  const deletedPackages = tourPackage._id.map(singlePackage => deletePackage(root, { tourPackage: { _id: singlePackage._id } }, context))
-  return await deletedPackages
+exports.deleteMultiPackages = async (root, { tourPackages }, { decoded }) => {
+  // const deletedPackages = tourPackages.map(singlePackage => deletePackage(root, { tourPackage: { _id: singlePackage._id } }, context))
+  // return await deletedPackages
+
+  // CHECK : Agent
+  const findAgent = await Agent.findOne({ agentUser: decoded._id }).exec();
+
+  // ERROR : Token & ID & Agent
+  if (!decoded || !tourPackages || !findAgent) throw Error("No access");
+
+  let packageImages = []
+
+  // Check if package agent match with client's agent id
+  const authorizedPackages = await Package.find({ _id: { $in: tourPackages } }, '_id packageAgent packageImages').then(tourPackages =>
+    tourPackages.filter(tourPackage => tourPackage.packageAgent.toString() === findAgent._id.toString())
+  )
+
+  if (authorizedPackages.length !== tourPackages.length) throw Error("No access")
+
+  // Push Old Package image to 'packageImages' variable
+  authorizedPackages.forEach(tourPackage => {
+    packageImages = [...packageImages, ...tourPackage.packageImages]
+  })
+
+  // Delete Old Package Images
+  const deletedImages = await deleteMultiImages(packageImages)
+
+  // If Delete image file success then delete the package in database
+  if (deletedImages) return await Package.deleteMany({ _id: { $in: tourPackages } })
+
+  // Throw error if delete failed
+  else throw Error('database delete failed')
 }
