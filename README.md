@@ -1,75 +1,31 @@
 # xpagent-api
-XP Agent API
 
-## Package
+Complete tour marketplace API connected to mongodb database
 
-### Package Query
-- createPackage
-    
-        `mutation (
-        $packageName: String!,
-        $packagePrice: Int!,
-        $packageDescription: String!,
-        $packageImages: [Upload!]!,
-        $packageDuration: Int!,
-        $packageCustomer: Int!
-        ) {
-            createPackage(
-                tourPackage: {
-                    packageName : $packageName, 
-                    packagePrice: $packagePrice, 
-                    packageDescription: $packageDescription, 
-                    packageImages: $packageImages, 
-                    packageDuration: $packageDuration, 
-                    packageCustomer: $packageCustomer}){
-                        packageName
-                }}`
+## How to Use
+- > `npm install`
+- > `npm start`
+- Open web browser on http://localhost:5000/graphql
 
-- updatePackage
-  
-        `mutation (
-        $_id: ID!,
-        $packageName: String,
-        $packagePrice: Int,
-        $packageDescription: String,
-        $packageImages: [Upload],
-        $packageDuration: Int,
-        $packageCustomer: Int
-        ){
-            updatePackage(tourPackage: {
-                _id: $_id,
-                packageName: $packageName, 
-                packagePrice: $packagePrice, 
-                packageDescription: $packageDescription, 
-                packageImages: $packageImages, 
-                packageDuration: $packageDuration, 
-                packageCustomer: $packageCustomer}) {
-                    _id
+### Query Example
+    `{
+        packages(){
+            _id,
+            packageName
         }
-}`
+    }`
 
-- deletePackage
-
-        `mutation ($_id : ID!){
-            deletePackage(tourPackage: {_id: $_id}){
-                _id
+### Mutation Example
+    `{
+        mutation($packageName: String!){
+            createPackage(packageName: $packageName){
+                _id,
+                packageName
             }
-        }`
+        }
+    }`
 
-- deleteMultiPackages
-    
-        `mutation ($_id : [deletePackageInput!]!){
-            deleteMultiPackages(tourPackages: $_id){
-                n,
-                ok,
-                deletedCount
-            }
-        }`
+<b> For File Upload request from client see: https://github.com/jaydenseric/graphql-multipart-request-spec 
 
-- deletePackageImage
-        
-        `mutation ($_id : ID!, $imageKey : String!){
-            deletePackageImage(_id: $_id, imageKey: $imageKey) {
-                _id
-            }
-        }`
+or test via altair : https://altair.sirmuel.design/
+</b>
