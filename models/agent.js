@@ -20,7 +20,8 @@ const Agent = new Schema(
     agentUser: {
       type: Schema.Types.ObjectId,
       ref: "User",
-      required: true
+      required: true,
+      unique: true
     }
   },
   { timestamps: true }

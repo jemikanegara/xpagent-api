@@ -50,11 +50,10 @@ exports.createAgent = async (root, { agent }, { decoded }) => {
   return await newAgent.save();
 };
 
-exports.updateAgent = async (
-  root,
-  { agentName, agentPhoto, agentDescription },
-  { decoded }
-) => {
+exports.updateAgent = async (root, { agent }, { decoded }) => {
+
+  const { agentName, agentPhoto, agentDescription } = agent
+
   if (!decoded) {
     throw Error("No Access");
   }
@@ -64,28 +63,30 @@ exports.updateAgent = async (
     throw Error("No Access");
   }
 
-  const agentPhotoValue = await agentPhoto;
+  // Resolve photo
+  const agentPhotoValue = await agentPhoto[0];
 
-  if (agentName) {
-    Agent.findByIdAndUpdate(findAgent._id, { agentName });
-  }
+  // Empty Object for update query
+  const newAgent = {}
 
-  if (agentDescription) {
-    Agent.findByIdAndUpdate(findAgent._id, { agentDescription });
-  }
-
+  if (agentName) newAgent.agentName = agentName
+  if (agentDescription) newAgent.agentDescription = agentDescription
   if (agentPhotoValue) {
-    const oldPhoto = Agent.findById(decoded._id).then(
-      agent => agent.agentPhoto
-    );
-    deleteImage(oldPhoto);
-    const agentUploadedPhoto = await uploadImage(agentPhotoValue);
+    // Delete Image on AWS
+    const deleteOldPhoto = await deleteImage(findAgent.agentPhoto);
+    // Upload New Image on AWS
+    const agentUploadedPhoto = deleteOldPhoto && await uploadImage(agentPhotoValue);
+
     if (!agentUploadedPhoto.Key) {
       throw Error("Upload Failed");
+    } else {
+      newAgent.agentPhoto = agentUploadedPhoto.Key
     }
-
-    Agent.findByIdAndUpdate(findAgent._id, {
-      agentPhoto: agentUploadedPhoto.Key
-    });
   }
+
+  console.log('new agent')
+  console.log(newAgent)
+
+  if (Object.keys(newAgent).length > 0) return await Agent.findByIdAndUpdate(findAgent._id, newAgent, { new: true })
+  else throw Error('Empty Field')
 };

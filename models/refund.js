@@ -21,6 +21,6 @@ const Refund = new Schema({
         ref: "Agent",
         required: true
     }
-})
+}, { timestamps: true })
 
 module.exports = mongoose.model("Refund", Refund)

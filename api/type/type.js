@@ -35,6 +35,7 @@ const reviewInput = require('./input/reviewInput')
 const type = gql`
   type Query {
     # Agent
+    getOwnAgent: agentOutput!
     searchAgent(agentName: String!): agentOutput!
     getAgent(id: ID): agentOutput!
     # Package
@@ -59,7 +60,7 @@ const type = gql`
     tokenCheck(token: String!): Boolean!
     # Agent
     createAgent(agent: agentInput): agentOutput!
-    updateAgent(agent: agentInput): agentOutput!
+    updateAgent(agent: agentUpdateInput): agentOutput!
     agentEmailCheck(email: String!): Boolean!
     agentTokenCheck(token: String!): agentTokenOutput!
     # Package

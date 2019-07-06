@@ -4,6 +4,12 @@ const agentInput = `
         agentPhoto : Upload!
         agentDescription : String!
     }
+
+    input agentUpdateInput{
+        agentName : String
+        agentPhoto : Upload
+        agentDescription : String
+    }
 `;
 
 module.exports = agentInput;

@@ -10,6 +10,7 @@ AWS.config.setPromisesDependency(Promise);
 const S3 = new AWS.S3();
 
 const uploadImage = async (image) => {
+  console.log(`upload single image running`)
   try {
     const params = {
       ACL: "public-read",
@@ -28,6 +29,7 @@ const uploadImage = async (image) => {
 }
 
 const uploadMultiImages = async (images) => {
+  console.log(`upload multi image running`)
   const packageUploadedPromise = await images.map(async singleImg => {
     const packageUploadedImage = await uploadImage(singleImg)
     if (!packageUploadedImage.Key) throw Error("Upload Failed");
@@ -39,6 +41,7 @@ const uploadMultiImages = async (images) => {
 }
 
 const getImage = async (image) => {
+  console.log(`get single image running`)
   try {
     const params = {
       Bucket: process.env.AWS_S3_BUCKET_NAME,
@@ -54,7 +57,7 @@ const getImage = async (image) => {
 }
 
 const deleteImage = async (image) => {
-  console.log(image)
+  console.log(`delete single image running`)
   try {
     const params = {
       Bucket: process.env.AWS_S3_BUCKET_NAME,
@@ -71,6 +74,7 @@ const deleteImage = async (image) => {
 }
 
 const deleteMultiImages = async (images) => {
+  console.log(`delete multi image running`)
   const imagesParams = images.map(image => ({ Key: image }))
   const params = {
     Bucket: process.env.AWS_S3_BUCKET_NAME,

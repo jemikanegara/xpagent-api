@@ -3,7 +3,7 @@ const Date = require("../type/scalar/Date");
 
 // Query
 // const { user } = require("../resolver/query/userQuery");
-const { getAgent, searchAgent } = require("../resolver/query/agentQuery");
+const { getAgent, searchAgent, getOwnAgent } = require("../resolver/query/agentQuery");
 const { getOwnPackage, getSinglePackage } = require('./query/packageQuery')
 const { getInvoice, getInvoices } = require("../resolver/query/invoiceQuery")
 
@@ -32,6 +32,7 @@ const { createReview } = require('./mutation/reviewMutation')
 const resolver = {
   Date,
   Query: {
+    getOwnAgent,
     getAgent,
     searchAgent,
     getOwnPackage,
