@@ -111,7 +111,7 @@ exports.updatePackage = async (root, { tourPackage }, { decoded }) => {
   return updatedPackage
 };
 
-const deletePackage = async (root, { tourPackage }, { decoded }) => {
+exports.deletePackage = async (root, { tourPackage }, { decoded }) => {
   // CHECK : Agent
   const findAgent = await Agent.findOne({ agentUser: decoded._id }).exec();
 
@@ -140,15 +140,7 @@ const deletePackage = async (root, { tourPackage }, { decoded }) => {
   else throw Error('database delete failed')
 }
 
-// MUTATION : Delete Package
-exports.deletePackage = async (root, args, context) => {
-  return await deletePackage(root, args, context)
-};
-
-
 exports.deleteMultiPackages = async (root, { tourPackages }, { decoded }) => {
-  // const deletedPackages = tourPackages.map(singlePackage => deletePackage(root, { tourPackage: { _id: singlePackage._id } }, context))
-  // return await deletedPackages
 
   // CHECK : Agent
   const findAgent = await Agent.findOne({ agentUser: decoded._id }).exec();
