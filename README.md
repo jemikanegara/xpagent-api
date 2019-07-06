@@ -50,7 +50,11 @@ XP Agent API
 
 - deletePackage
 
-        `on progress`
+        `mutation ($_id : ID!){
+            deletePackage(tourPackage: {_id: $_id}){
+                _id
+            }
+        }`
 
 - deleteMultiPackages
     
@@ -67,6 +71,5 @@ XP Agent API
         `mutation ($_id : ID!, $imageKey : String!){
             deletePackageImage(_id: $_id, imageKey: $imageKey) {
                 _id
-        }
-    }
-`
+            }
+        }`
