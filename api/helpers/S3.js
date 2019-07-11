@@ -11,10 +11,11 @@ const S3 = new AWS.S3();
 
 const uploadImage = async (image) => {
   console.log(`upload single image running`)
+  console.log(image)
   try {
     const params = {
       ACL: "public-read",
-      Body: image.createReadStream(),
+      Body: image.createReadStream ? image.createReadStream() : image.data,
       Bucket: process.env.AWS_S3_BUCKET_NAME,
       ContentType: image.mimetype,
       Key: `${Date.now().toString()}.${image.filename}`

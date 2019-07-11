@@ -15,6 +15,13 @@ const packageOutput = `
         ok: Int!
         deletedCount: Int!
     }
+
+    type image {
+        original: String!
+        clientThumbnail: String!
+        agentThumbnail : String!
+        uploadPreview : String!
+    }
 `;
 
 module.exports = packageOutput;
